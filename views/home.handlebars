@@ -1,0 +1,58 @@
+<h1>Youtube</h1>
+<button id="scrape" class="btn">scrape</button>
+
+
+
+{{> header home=true saved=false}}
+{{!-- <ul> --}}
+{{#each articles}}
+{{#unless  this.saved}}
+<div class="container">
+    <card class="articleWrap">
+        <p id="text">{{this.text}}</p>
+        <img src= "{{this.image}}">
+        <a href="http://youtube.com{{this.link}}" target="_blank"> View link</a>
+        <button class="saved" data-aid={{this._id}}>Save</button>
+    </card>
+</div>
+{{/unless }}
+{{/each}}
+{{!-- </ul> --}}
+
+
+{{#unless articles}}
+<h3>No Articles Saved Yet</h3>
+{{/unless}}
+
+
+<script type="text/javascript">
+
+    $("#scrape").on("click", function () {
+        $(".databaseInformation").empty();
+        $.get("/scrape", function (response) {
+        })
+    })
+
+
+    $(".saved").on("click", function () {
+        var articleId = $(this).data("aid");
+
+        var updateArticle = {
+            saved: true
+        }
+        var self = $(this)
+        $.ajax({
+            method: "PUT",
+            url: "/articles/" + articleId,
+            data: updateArticle,
+            sucess: function (result) {
+                if (result) {
+                    var parentElm = self.parent(".articleWarp")
+                    parentElm.remove();
+                }
+            }
+        })
+    })
+
+
+</script>
